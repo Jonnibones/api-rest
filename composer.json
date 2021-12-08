@@ -1,0 +1,11 @@
+{
+  "require":{
+      "slim/slim":"2.0"
+  },
+  "autoload":{
+      "psr-4":{
+          "Models\\":"vendor/App/Models/",
+          "Controllers\\":"vendor/App/Controllers/"
+      }
+  }
+}
