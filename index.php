@@ -1,12 +1,12 @@
 <?php
 
-    header('Content-Type: application\json; charset=utf-8');
-
     require_once('vendor/autoload.php');
 
     use Slim\Slim;
 
     $app = new Slim();
+
+    $app->response()->header('Content-Type', 'application/json;charset=utf-8');
 
     $app->get('/', function(){
 
