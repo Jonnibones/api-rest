@@ -3,6 +3,7 @@
 namespace Models;
 
 use Models\Connection;
+use Slim\App;
 
     class Persons extends Connection
     {
@@ -13,13 +14,13 @@ use Models\Connection;
             $stmt = self::$conn->prepare('SELECT * FROM '.self::$table);
             $stmt->execute();
 
-            if($stmt->rowCount() > 0)
+            if($stmt->rowCount())
             {
-                return json_encode(array('status' => 'success', 'data' => $stmt->fetchAll(\PDO::FETCH_ASSOC)));
+                return array('status' => 'success', 'data' => $stmt->fetchAll(\PDO::FETCH_ASSOC));
             }
             else
             {
-                return json_encode(array('status' => 'fail', 'data' => 'Sem usuários encontrados'));
+                return array('status' => 'fail', 'data' => 'Sem usuários encontrados');
             }
 
         }
@@ -30,16 +31,58 @@ use Models\Connection;
             $stmt->bindValue(':id', $id);
             $stmt->execute();
 
-            if($stmt->rowCount() > 0)
+            if($stmt->rowCount())
             {
-                return json_encode(array('status' => 'success', 'data' => $stmt->fetchAll(\PDO::FETCH_ASSOC)));
-            }
-            else
+                return array('status' => 'success', 'data' => $stmt->fetchAll(\PDO::FETCH_ASSOC));
+
+            }else
             {
-                return json_encode(array('status' => 'fail', 'data' => 'Sem usuários encontrados'));
+                return array('status' => 'fail', 'data' => 'Nenhum usuário encontrado');
             }
 
         }
+
+        public static function Insert($email, $password, $name)
+        {
+            $stmt = self::$conn->prepare('INSERT INTO '.self::$table.'(email, password, name) VALUES(:email, :password, :name)');
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':password', $password);
+            $stmt->bindValue(':name', $name);
+
+            $stmt->execute();
+
+            if ($stmt->rowCount()) 
+            {
+               return array('status' => 'success', 'data' => 'Usuário inserido com sucesso!');
+            }
+            else
+            {
+               return array('status' => 'fail', 'data' => 'Usuário não inserido!');
+            }
+
+        }
+
+        public static function Update($id, $email, $password, $name)
+        {
+            $stmt = self::$conn->prepare('UPDATE '.self::$table.' SET email = :email, password = :password, name = :name WHERE id = :id');
+            $stmt->bindValue(':id', $id);
+            $stmt->bindValue(':email', $email);
+            $stmt->bindValue(':password', $password);
+            $stmt->bindValue(':name', $name);
+
+            $stmt->execute();
+
+            if ($stmt->rowCount()) 
+            {
+               return array('status' => 'success', 'data' => 'Usuário atualizado com sucesso!');
+            }
+            else
+            {
+               return array('status' => 'fail', 'data' => 'Usuário não atualizado!');
+            }
+            
+        }
+
     }
 
 ?>

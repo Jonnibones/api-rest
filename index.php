@@ -1,12 +1,8 @@
 <?php
 
-    require_once('vendor/autoload.php');
+require_once('vendor/autoload.php');
 
-    use Slim\Slim;
-
-    $app = new Slim();
-
-    $app->response()->header('Content-Type', 'application/json;charset=utf-8');
+    $app = new Slim\App();
 
     $app->get('/', function(){
 
@@ -20,22 +16,48 @@
 
     });
 
-    $app->get('/api/persons', function(){
+    $app->get('/api/persons', function($request, $response ) use($app){
 
         $persons = new Controllers\Persons_service;
 
-        echo $persons->get();
+        $return = $response->withJson($persons->get(), 200);
+
+        return $return;
 
     });
 
-    
-    $app->get('/api/persons/:id', function($id){
+
+    $app->get('/api/persons/{id}', function($request, $response, $id){
 
         $persons = new Controllers\Persons_service;
 
-        echo $persons->get($id);
+        $route = $request->getAttribute('route');
+        $id = $route->getArgument('id'); 
 
-    });
-    
+        if ($persons->get($id)['status'] == 'success') {
+
+            $return = $response->withJson($persons->get($id), 200);
+            return $return;
+        }
+        else
+        {
+            $return = $response->withJson($persons->get($id), 400);
+            return $return;
+        }
+        
+    }); 
+
+    $app->post('/api/persons', function($request, $response){
+       
+       $persons = new Controllers\Persons_service; 
+
+       $data = $request->getParsedBody();
+
+       $return = $response->withJson($persons->post($data['id'], $data['email'], $data['password'], $data['name']), 202);
+
+       return $return;
+        
+    });  
+
     $app->run();
 ?>
