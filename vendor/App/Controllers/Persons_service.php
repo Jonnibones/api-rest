@@ -16,31 +16,24 @@
             else
             {
                 return Persons::selectAll(); 
-            }
-            
+            }  
         }
 
-        public function post($id, $email, $password, $name)
+        public function post($email, $password, $name)
         {
-            if(is_null($id))
-            {
-                return Persons::Insert($email, $password, $name);
-            }
-            else
-            {
-                return Persons::Update($id, $email, $password, $name);
-            }
+            return Persons::Insert($email, $password, $name);
         }
 
-        public function put()
+        public function put($id, $email, $password, $name)
         {
-            
+            return Persons::Update($id, $email, $password, $name);
         }
 
-        public function delete()
+        public function delete($id)
         {
-            
+           return Persons::Delete($id); 
         }
+
     }
     
 
